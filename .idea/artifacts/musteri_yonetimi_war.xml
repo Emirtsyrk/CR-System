@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="musteri-yonetimi:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>musteri-yonetimi</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="musteri-yonetimi-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="musteri-yonetimi:war exploded" />
+    </root>
+  </artifact>
+</component>

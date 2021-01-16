@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="org.jboss.spec.javax.servlet.jsp:jboss-jsp-api_2.2_spec:1.0.0.Final" type="repository">
+    <properties maven-id="org.jboss.spec.javax.servlet.jsp:jboss-jsp-api_2.2_spec:1.0.0.Final" />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/jboss-jsp-api_2.2_spec-1.0.0.Final.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jboss-el-api_2.2_spec-1.0.0.Final.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jboss-servlet-api_3.0_spec-1.0.0.Final.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
