@@ -20,7 +20,15 @@ import com.example.musteri_yonetimi.model.User;
 
 public class UserDAO {
     // Database bağlantı URL'i
-    private String jdbcURL = "jdbc:mysql://127.0.0.1:3306/demo?useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+    private String jdbcURL = "jdbc:mysql://us-cdbr-east-03.cleardb.com:3306/demo?user=be76a684cf14f1useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+
+
+    /**
+     * mysql://be76a684cf14f1:6c75e8bb@us-cdbr-east-03.cleardb.com/heroku_76b0a109eee6ba5?reconnect=true
+     *
+     * */
+
+    //jdbc:mysql://us-cdbr-east-03.cleardb.com:3306/?user=be76a684cf14f1
 
 
     // Database sahibinin bilgileri.
@@ -54,9 +62,11 @@ public class UserDAO {
     /** Müşteri bilgilerini güncelleme komutu (SQL). */
     private static final String UPDATE_USERS_SQL = "update users set name = ?,email= ?, country =? where id = ?;";
 
+
     public UserDAO() {
         /** Yapıcı metod (Constructor) */
     }
+
 
     /** "mysql-connector-java-8.0.13.jar" kütüphanesi kullanarak bağlantıyı gerçekleştirdik. */
     protected Connection getConnection() {
@@ -65,10 +75,8 @@ public class UserDAO {
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(jdbcURL, jdbcUsername, jdbcPassword);
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return connection;

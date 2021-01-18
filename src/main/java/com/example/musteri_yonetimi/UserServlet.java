@@ -89,9 +89,7 @@ public class UserServlet extends HttpServlet {
 
     }
 
-    /**
-        Servlet path /insert olduğunda çalışıyor.
-     */
+    // Servlet path /insert olduğunda çalışıyor.
     private void insertUser(HttpServletRequest request, HttpServletResponse response)
         throws SQLException, IOException {
             String name = request.getParameter("name");
