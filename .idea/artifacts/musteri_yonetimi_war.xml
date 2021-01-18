@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact type="war" name="musteri-yonetimi:war">
+  <artifact type="war" build-on-make="true" name="musteri-yonetimi:war">
     <output-path>$PROJECT_DIR$/target</output-path>
     <properties id="maven-jee-properties">
       <options>
