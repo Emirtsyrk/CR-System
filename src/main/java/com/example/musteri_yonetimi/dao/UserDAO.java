@@ -20,20 +20,11 @@ import com.example.musteri_yonetimi.model.User;
 
 public class UserDAO {
     // Database bağlantı URL'i
-    private String jdbcURL = "jdbc:mysql://us-cdbr-east-03.cleardb.com:3306/demo?user=be76a684cf14f1useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
-
-
-    /**
-     * mysql://be76a684cf14f1:6c75e8bb@us-cdbr-east-03.cleardb.com/heroku_76b0a109eee6ba5?reconnect=true
-     *
-     * */
-
-    //jdbc:mysql://us-cdbr-east-03.cleardb.com:3306/?user=be76a684cf14f1
-
+    private String jdbcURL = "jdbc:mysql://us-cdbr-east-03.cleardb.com:3306/heroku_76b0a109eee6ba5?reconnect=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
 
     // Database sahibinin bilgileri.
-    private String jdbcUsername = "root";
-    private String jdbcPassword = "1234";
+    private String jdbcUsername = "be76a684cf14f1";
+    private String jdbcPassword = "6c75e8bb";
 
 
 
