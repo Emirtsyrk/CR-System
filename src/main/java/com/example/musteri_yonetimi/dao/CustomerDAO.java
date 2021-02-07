@@ -227,10 +227,10 @@ public class CustomerDAO {
     }
 
 
-    public boolean deleteCustomer(int id) throws SQLException {
+    public boolean deleteCustomer(String id) throws SQLException {
         boolean rowDeleted;
         try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(DELETE_CUSTOMER_SQL);) {
-            statement.setInt(1, id);
+            statement.setString(1, id);
 
             rowDeleted = statement.executeUpdate() > 0;
         }

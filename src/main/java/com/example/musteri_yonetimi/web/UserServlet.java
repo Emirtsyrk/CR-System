@@ -335,7 +335,7 @@ public class UserServlet extends HttpServlet {
         if (userID == null || !status.equals("user")) {
             response.sendRedirect("index.jsp");
         } else {
-            int id = Integer.parseInt(request.getParameter("id"));
+            String id = (String)(request.getParameter("id"));
             customerDAO.deleteCustomer(id);
             response.sendRedirect("list");
         }
