@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.musteri_yonetimi.model.User;
+import org.mindrot.jbcrypt.BCrypt;
 
 /**
     DAO veri tasarım şablonu kullanıldı.
@@ -26,40 +27,18 @@ public class UserDAO {
     private String jdbcUsername = "be76a684cf14f1";
     private String jdbcPassword = "6c75e8bb";
 
-
-
-    /**
-        Database'e müşteri ekleme komutu (SQL)
-        (? ,?, ?) yer tutuculardır, sırasıyla (name, email, country)
-     * */
-    private static final String INSERT_USERS_SQL = "INSERT INTO users" + "  (name, email, country) VALUES "
+    private static final String VALIDATE_USER = "SELECT * from users WHERE name = ?";
+    private static final String SELECT_USER_BY_ID = "SELECT id, name, password FROM users WHERE id =?";
+    private static final String SELECT_ALL_USERS = "SELECT users.name AS 'username', COUNT(customers.id) AS 'numberOfCustomer'" +
+            "FROM customers\n" +
+            "INNER JOIN users ON users.id=customers.userID\n" +
+            "GROUP BY userID;";
+    private static final String CHECK_USER_BY_NAME = "SELECT id, name, password FROM users WHERE name =?";
+    private static final String INSERT_USERS_SQL = "INSERT INTO users" + "  (id, name, password) VALUES "
             + " (?, ?, ?);";
 
-    /**
-        Müşteri seçme komutu (SQL).
-        Müsteri bilgileri düzenlerken gerekiyor.
-     */
-    private static final String SELECT_USER_BY_ID = "select id,name,email,country from users where id =?";
+    public UserDAO() {}
 
-    /**
-        Tüm müşterileri çekme komutu (SQL).
-        Müşteri tablasunu oluştururken gerekiyor.
-     */
-    private static final String SELECT_ALL_USERS = "select * from users";
-
-    /** Müşteri silme komutu (SQL). */
-    private static final String DELETE_USERS_SQL = "delete from users where id = ?;";
-
-    /** Müşteri bilgilerini güncelleme komutu (SQL). */
-    private static final String UPDATE_USERS_SQL = "update users set name = ?,email= ?, country =? where id = ?;";
-
-
-    public UserDAO() {
-        /** Yapıcı metod (Constructor) */
-    }
-
-
-    /** "mysql-connector-java-8.0.13.jar" kütüphanesi kullanarak bağlantıyı gerçekleştirdik. */
     protected Connection getConnection() {
         Connection connection = null;
         try {
@@ -73,57 +52,57 @@ public class UserDAO {
         return connection;
     }
 
+    public String findUserByName(String name) throws SQLException {
+        String userID = null;
+
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(CHECK_USER_BY_NAME);) {
+            preparedStatement.setString(1, name);
+
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while (rs.next()) {
+                String id = rs.getString("id");
+                String username = rs.getString("name");
+                if (username.equals(name)) {
+                    userID = id;
+                }
+            }
+        } catch (SQLException e) {
+            printSQLException(e);
+        }
+
+        return userID;
+    }
+
+
     public void insertUser(User user) throws SQLException {
+        System.out.println(INSERT_USERS_SQL);
 
-        /** try-catch, bir hata oluşursa bağlantı otomatik kapanacak. */
-        try (Connection connection = getConnection();
 
-             /**
-                PreparedStatement, parametreli sorguyu yürütmek için kullanılır.
-                Oluşturduğumuz connection objesi ile ifade oluşturduk.
-              */
-             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USERS_SQL)) {
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USERS_SQL)) {
+            preparedStatement.setString(1, user.getId());
+            preparedStatement.setString(2, user.getName());
+            preparedStatement.setString(3, user.getPassword());
 
-                /**
-                    setString metodu;
-                    yer tutucularla ayrılan yeri dolduruyor.
-                 */
-                preparedStatement.setString(1, user.getName());
-                preparedStatement.setString(2, user.getEmail());
-                preparedStatement.setString(3, user.getCountry());
-
-                /**
-                    executeUpdate() metodu;
-                    INSERT, UPDATE veya DELETE gibi bir SQL ifadesini çalıştırır.
-                 */
-                preparedStatement.executeUpdate();
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             printSQLException(e);
         }
     }
 
-    public User selectUser(int id) {
-        /**
-             Oluşturduğumuz User class'ından "user" nesnesi oluşturduk.
-             Bu method "user" nesnesini döndürecek.
-         */
+    public User selectUser(String id) {
+
         User user = null;
 
-        /** Bağlantı kuruluyor. */
-        try (Connection connection = getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_USER_BY_ID);) {
-                preparedStatement.setInt(1, id);
-                System.out.println(preparedStatement);
-                ResultSet rs = preparedStatement.executeQuery();
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(SELECT_USER_BY_ID);) {
+            preparedStatement.setString(1, id);
+            ResultSet rs = preparedStatement.executeQuery();
 
-           /** "user" nesnemizi database'den çektiğimiz bilgileri ekledik */
             while (rs.next()) {
                 String name = rs.getString("name");
-                String email = rs.getString("email");
-                String country = rs.getString("country");
+                String password = rs.getString("password");
 
-                /** User yapıcı bize yeni nesne dönderdi.*/
-                user = new User(id, name, email, country);
+                user = new User(id, name, password);
             }
         } catch (SQLException e) {
             printSQLException(e);
@@ -135,17 +114,15 @@ public class UserDAO {
     public List<User> selectAllUsers() {
 
         List<User> users = new ArrayList<>();
-        try (Connection connection = getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_USERS);) {
-                 System.out.println(preparedStatement);
-                 ResultSet rs = preparedStatement.executeQuery();
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_USERS);) {
+            System.out.println(preparedStatement);
+            ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
-                int id = rs.getInt("id");
-                String name = rs.getString("name");
-                String email = rs.getString("email");
-                String country = rs.getString("country");
-                users.add(new User(id, name, email, country));
+                String name = rs.getString("username");
+                String numberOfCustomer = rs.getString("numberOfCustomer");
+                System.out.println(name + " - " +numberOfCustomer);
+                users.add(new User(null, name, null, numberOfCustomer));
             }
         } catch (SQLException e) {
             printSQLException(e);
@@ -154,43 +131,28 @@ public class UserDAO {
         return users;
     }
 
-    public boolean deleteUser(int id) throws SQLException {
-        boolean rowDeleted;
+    public boolean validate(User user) throws ClassNotFoundException {
+        boolean status = false;
+
+
         try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(DELETE_USERS_SQL);) {
-                statement.setInt(1, id);
+             PreparedStatement preparedStatement = connection.prepareStatement(VALIDATE_USER);) {
+            preparedStatement.setString(1, user.getName());
 
-                /**
-                    Silme işlemi gerçekleştiyse "statement.executeUpdate()" "1" dönderir.
-                    gerçekleşmez ise "-1" dönderir.
-                 */
-                rowDeleted = statement.executeUpdate() > 0;
+            ResultSet rs = preparedStatement.executeQuery();
+            status = rs.next();
+
+            String hashedPW = rs.getString("password");
+            status = status && BCrypt.checkpw(user.getPassword(), hashedPW);
+
+        } catch (SQLException e) {
+            printSQLException(e);
         }
-        return rowDeleted;
-    }
-
-    public boolean updateUser(User user) throws SQLException {
-        boolean rowUpdated;
-        try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(UPDATE_USERS_SQL);) {
-                statement.setString(1, user.getName());
-                statement.setString(2, user.getEmail());
-                statement.setString(3, user.getCountry());
-                statement.setInt(4, user.getId());
-
-                /**
-                     Güncelleme işlemi gerçekleştiyse "statement.executeUpdate()" "1" dönderir.
-                     gerçekleşmez ise "-1" dönderir.
-                 */
-                rowUpdated = statement.executeUpdate() > 0;
-        }
-        return rowUpdated;
+        return status;
     }
 
 
-    /**
-        SQL kaynaklı hataları ekrana bastırır.
-     */
+
     private void printSQLException(SQLException ex) {
         for (Throwable e : ex) {
             if (e instanceof SQLException) {

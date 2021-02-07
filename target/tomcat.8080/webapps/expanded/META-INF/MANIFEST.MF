@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-Created-By: IntelliJ IDEA
-Built-By: emirt
-Build-Jdk: Amazon Corretto version 11.0.9
+Build-Jdk-Spec: 1.8
+Created-By: Maven WAR Plugin 3.3.0
 

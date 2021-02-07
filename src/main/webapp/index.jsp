@@ -4,7 +4,6 @@
 
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
     <title>Müsteri Yönetim Sistemi</title>
     <link rel="stylesheet"
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -17,78 +16,40 @@
 </head>
 <body>
 
-
-<br>
-
 <div class="row">
 
     <div class="container" style="margin-top: 120px">
-        <h3 class="text-center">Admin Paneli</h3>
+        <h3 class="text-center" style="margin-bottom: 24px">Giriş Yap</h3>
 
 
         <div class="container col-md-5">
             <div class="card">
                 <div class="card-body">
-                        <form action="auth" method="post">
-                            <fieldset class="form-group">
-                                <label>Kullanıcı</label> <input type="text"
-                                                                value="<c:out value='${admin.name}' />" class="form-control"
-                                                                name="name" required="required" autocomplete="off" >
-                            </fieldset>
+                    <form action="login" method="post">
+                        <fieldset class="form-group">
+                            <label>Kullanıcı</label> <input type="text"
+                                                            class="form-control"
+                                                            name="name" required="required" autocomplete="off" >
+                        </fieldset>
 
-                            <fieldset class="form-group">
-                                <label>Parola</label> <input type="password"
-                                                                 value="<c:out value='${admin.email}' />" class="form-control"
-                                                                 name="email">
-                            </fieldset>
+                        <fieldset class="form-group">
+                            <label>Parola</label> <input type="password"
+                                                         class="form-control"
+                                                         name="password">
+                        </fieldset>
+
+                        <h3 style="font-size: 14px; color: red"><c:out value='${message}' /></h3>
 
 
-
-                            <button type="submit" class="btn btn-success">Giriş</button>
-                        </form>
+                        <button type="submit" class="btn btn-primary" style="width: 100%">Giriş Yap</button>
+                    </form>
+                    <hr style="margin: 24px 0">
+                    <form action="signup.jsp" method="post">
+                        <button type="submit" class="btn btn-outline-primary"  style="width: 100%">Kayıt Ol!</button>
+                    </form>
                 </div>
             </div>
         </div>
-
-
-
-        <!-- <hr>
-        <div class="container text-left">
-
-            <a href="<%=request.getContextPath()%>/new" class="btn btn-success">Add
-                New User</a>
-        </div>
-        <br>
-        <table class="table table-bordered">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Country</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-
-
-    <%--            <c:out value="${listUser}"/>
-            <c:forEach var="user" items="${listUser}">
-
-                <tr>
-                    <td><c:out value="${user.id}" /></td>
-                    <td><c:out value="${user.name}" /></td>
-                    <td><c:out value="${user.email}" /></td>
-                    <td><c:out value="${user.country}" /></td>
-                    <td><a href="edit?id=<c:out value='${user.id}' />">Edit</a>
-                        &nbsp;&nbsp;&nbsp;&nbsp; <a
-                                href="delete?id=<c:out value='${user.id}' />">Delete</a></td>
-                </tr>
-            </c:forEach>--%>
-
-            </tbody>
-
-        </table>-->
     </div>
 </div>
 </body>

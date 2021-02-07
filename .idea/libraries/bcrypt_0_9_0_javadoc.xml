@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="bcrypt-0.9.0-javadoc">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/target/musteri-yonetimi-1.0-SNAPSHOT" />
+      <root url="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/lib" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/lib/bcrypt-0.9.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/lib" recursive="false" />
+  </library>
+</component>
