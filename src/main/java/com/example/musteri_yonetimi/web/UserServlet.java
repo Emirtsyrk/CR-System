@@ -168,31 +168,31 @@ public class UserServlet extends HttpServlet {
     }
 
     private void logout(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException, ServletException {
-        HttpSession session = request.getSession();
-        session.invalidate();
-        response.sendRedirect("index.jsp");
+        throws SQLException, IOException, ServletException {
+            HttpSession session = request.getSession();
+            session.invalidate();
+            response.sendRedirect("index.jsp");
     }
 
 
     private void adminHomePage(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException, ServletException {
-        HttpSession session = request.getSession();
-        String userID = (String) session.getAttribute("userID");
-        String status = (String) session.getAttribute("status");
+        throws SQLException, IOException, ServletException {
+            HttpSession session = request.getSession();
+            String userID = (String) session.getAttribute("userID");
+            String status = (String) session.getAttribute("status");
 
-        if (userID == null || !status.equals("admin")) {
-            response.sendRedirect("index.jsp");
-        } else {
-            List<Customer> listCustomers = customerDAO.selectCustomersByUser(userID);
-            List<User> listUsers = userDAO.selectAllUsers();
+            if (userID == null || !status.equals("admin")) {
+                response.sendRedirect("index.jsp");
+            } else {
+                List<Customer> listCustomers = customerDAO.selectCustomersByUser(userID);
+                List<User> listUsers = userDAO.selectAllUsers();
 
-            request.setAttribute("listCustomers", listCustomers);
-            request.setAttribute("listUsers", listUsers);
+                request.setAttribute("listCustomers", listCustomers);
+                request.setAttribute("listUsers", listUsers);
 
-            RequestDispatcher dispatcher = request.getRequestDispatcher("admin.jsp");
-            dispatcher.forward(request, response);
-        }
+                RequestDispatcher dispatcher = request.getRequestDispatcher("admin.jsp");
+                dispatcher.forward(request, response);
+            }
     }
 
     private void adminCustomerList(HttpServletRequest request, HttpServletResponse response)
