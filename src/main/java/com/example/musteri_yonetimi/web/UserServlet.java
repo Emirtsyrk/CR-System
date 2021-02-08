@@ -81,6 +81,7 @@ public class UserServlet extends HttpServlet {
                 case "/selectAllDepartment":
                     selectAllDepartment(request, response);
                     break;
+
                 default:
                     listCustomers(request, response);
                     break;
