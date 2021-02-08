@@ -17,7 +17,6 @@ import java.util.UUID;
 
 
 @WebServlet("/")
-//@WebServlet(name = "helloServlet", value = "/hello-servlet")
 
 public class UserServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -39,7 +38,7 @@ public class UserServlet extends HttpServlet {
             throws ServletException, IOException {
         String action = request.getServletPath();
         HttpSession session = request.getSession();
-        String status = (String) ((HttpSession) session).getAttribute("status");
+        String status = (String) session.getAttribute("status");
 
         try {
             switch (action) {
@@ -83,10 +82,10 @@ public class UserServlet extends HttpServlet {
                     selectAllDepartment(request, response);
                     break;
                 default:
-                    logout(request, response);
+                    listCustomers(request, response);
                     break;
             }
-        } catch (SQLException ex) {
+        } catch (SQLException | ClassNotFoundException ex) {
             throw new ServletException(ex);
         }
     }
@@ -102,12 +101,12 @@ public class UserServlet extends HttpServlet {
         boolean isExist = userID != null;
 
         if (isExist) {
-            String message="Bu kullanıcı adı daha önce alındı!";
+            String message="Bu kullanici adi daha once alindi!";
             request.setAttribute("userNameMessage", message);
         }
 
         if (differentPassword) {
-            String message="Şifreler aynı olmalı!";
+            String message="Sifreler ayni olmali!";
             request.setAttribute("passwordMessage", message);
 
         }
@@ -133,19 +132,19 @@ public class UserServlet extends HttpServlet {
     }
 
     private void login(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException {
+            throws SQLException, IOException, ClassNotFoundException, ServletException {
         String name = request.getParameter("name");
         String id = userDAO.findUserByName(name);
         String password = request.getParameter("password");
 
         User user = new User(id, name, password);
 
-        try {
+
             if (userDAO.validate(user)) {
                 HttpSession session = request.getSession();
                 session.setAttribute("userID",id);
                 session.setAttribute("username",name);
-                System.out.println(name.equals("emircantasyurek"));
+
                 if (name.equals("emircantasyurek")) {
                     session.setAttribute("status","admin");
                     response.sendRedirect("admin");
@@ -162,37 +161,35 @@ public class UserServlet extends HttpServlet {
                 dispatcher.forward(request, response);
 
             }
-        } catch (ClassNotFoundException | ServletException e) {
-            e.printStackTrace();
-        }
+
     }
 
     private void logout(HttpServletRequest request, HttpServletResponse response)
-        throws SQLException, IOException, ServletException {
-            HttpSession session = request.getSession();
-            session.invalidate();
-            response.sendRedirect("index.jsp");
+            throws SQLException, IOException, ServletException {
+        HttpSession session = request.getSession();
+        session.invalidate();
+        response.sendRedirect("index.jsp");
     }
 
 
     private void adminHomePage(HttpServletRequest request, HttpServletResponse response)
-        throws SQLException, IOException, ServletException {
-            HttpSession session = request.getSession();
-            String userID = (String) session.getAttribute("userID");
-            String status = (String) session.getAttribute("status");
+            throws SQLException, IOException, ServletException {
+        HttpSession session = request.getSession();
+        String userID = (String) session.getAttribute("userID");
+        String status = (String) session.getAttribute("status");
 
-            if (userID == null || !status.equals("admin")) {
-                response.sendRedirect("index.jsp");
-            } else {
-                List<Customer> listCustomers = customerDAO.selectCustomersByUser(userID);
-                List<User> listUsers = userDAO.selectAllUsers();
+        if (userID == null || !status.equals("admin")) {
+            response.sendRedirect("index.jsp");
+        } else {
+            List<Customer> listCustomers = customerDAO.selectCustomersByUser(userID);
+            List<User> listUsers = userDAO.selectAllUsers();
 
-                request.setAttribute("listCustomers", listCustomers);
-                request.setAttribute("listUsers", listUsers);
+            request.setAttribute("listCustomers", listCustomers);
+            request.setAttribute("listUsers", listUsers);
 
-                RequestDispatcher dispatcher = request.getRequestDispatcher("admin.jsp");
-                dispatcher.forward(request, response);
-            }
+            RequestDispatcher dispatcher = request.getRequestDispatcher("admin.jsp");
+            dispatcher.forward(request, response);
+        }
     }
 
     private void adminCustomerList(HttpServletRequest request, HttpServletResponse response)
@@ -381,7 +378,6 @@ public class UserServlet extends HttpServlet {
         }
 
         String department = (request.getParameter("department"));
-
         List<Customer> listCustomers;
 
         if (department == "") {
